@@ -1,0 +1,18 @@
+[build]
+builder = "NIXPACKS"
+
+[build.nixpacksPlan]
+providers = ["python"]
+
+[[build.nixpacksPlan.phases]]
+name = "setup"
+nixPkgs = ["python310", "gcc", "stdenv.cc", "libsndfile", "ffmpeg"]
+
+[[build.nixpacksPlan.phases]]
+name = "install"
+cmds = ["pip install -r requirements.txt"]
+
+[deploy]
+startCommand = "gunicorn --bind 0.0.0.0:$PORT --timeout 120 --workers 1 server:app"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
